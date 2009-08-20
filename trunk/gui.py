@@ -31,7 +31,7 @@ class Gui(gtk.Window):
 		menu_about = gtk.STOCK_ABOUT, About	
 		
 		gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
-		self.set_size_request(300, 500)
+		self.set_size_request(600, 400)
 		self.set_icon_from_file(cons.ICON_PROGRAM)
 		self.set_title(cons.PROGRAM_NAME)
 		
