@@ -28,6 +28,15 @@ class Gui(gtk.Window):
 	def muestra_texto(self, widget, entry):
 		entry_text = entry.get_text()
 		print "Contenido caja: %s\n" % entry_text
+		#Iterador al final (donde se va a anyadir)
+		final = self.textbuffer.get_end_iter()
+		#Hacemos el salto de linea
+		entry_text = entry_text + "\n"
+		#Insertamos texto
+		self.textbuffer.insert(final,entry_text)
+		#Vaciamos la caja de entrada de texto
+		entry.set_text("")
+
 		
 	def menuitem_response(self, widget, string):
 		print "%s" % string
@@ -63,17 +72,30 @@ class Gui(gtk.Window):
 		self.vbox.pack_start(MenuBar([file_menu, view_menu, help_menu]), False)
 		self.vbox.show()		
 		
-
+		#textview box
+		sw = gtk.ScrolledWindow()
+		sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		textview = gtk.TextView()
+		self.textbuffer = textview.get_buffer()
+		sw.add(textview)
+		sw.show()
+		textview.show()
+		self.vbox.pack_start(sw)
+		self.textbuffer.set_text("Hola, soy el texto de prueba \n")		
+		textview.set_editable(gtk.FALSE)
+		
 		#entry box
 		entry = gtk.Entry()
 		entry.set_max_length(50)
 		entry.connect("activate", self.muestra_texto, entry)
-		entry.set_text("hello")
-		entry.insert_text(" world", len(entry.get_text()))
+		entry.set_text("Tu texto")
+		entry.insert_text(" aqui", len(entry.get_text()))
 		entry.select_region(0, len(entry.get_text()))
 		self.vbox.pack_end(entry, gtk.TRUE, gtk.TRUE, 0)
 		entry.show()
-
+		
+		
+		
 		self.show()
 		
 		#trayicon
