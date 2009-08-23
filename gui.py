@@ -25,6 +25,13 @@ class Gui(gtk.Window):
 		gtk.main_quit()
 		return gtk.FALSE
 
+	def muestra_texto(self, widget, entry):
+		entry_text = entry.get_text()
+		print "Contenido caja: %s\n" % entry_text
+		
+	def menuitem_response(self, widget, string):
+		print "%s" % string
+		
 	def __init__(self):
 
 		menu_quit = gtk.STOCK_QUIT, self.quit
@@ -38,9 +45,11 @@ class Gui(gtk.Window):
 		#self.move(self.x, self.y)
 		
 		self.connect("delete_event", self.delete_event)
+		
 		self.vbox = gtk.VBox()
 		self.add(self.vbox)
-				
+		self.vbox.show()	
+		
 		#menu items
 		menu_quit = gtk.STOCK_QUIT, self.quit
 		menu_help = gtk.STOCK_HELP, self.help
@@ -52,8 +61,20 @@ class Gui(gtk.Window):
 		view_menu = ("Editar"), [menu_preferences]
 		help_menu = ("Ayuda"), [menu_help, menu_about]
 		self.vbox.pack_start(MenuBar([file_menu, view_menu, help_menu]), False)
+		self.vbox.show()		
 		
-		self.show_all()
+
+		#entry box
+		entry = gtk.Entry()
+		entry.set_max_length(50)
+		entry.connect("activate", self.muestra_texto, entry)
+		entry.set_text("hello")
+		entry.insert_text(" world", len(entry.get_text()))
+		entry.select_region(0, len(entry.get_text()))
+		self.vbox.pack_end(entry, gtk.TRUE, gtk.TRUE, 0)
+		entry.show()
+
+		self.show()
 		
 		#trayicon
 		tray_menu = [menu_about, None, menu_quit]
