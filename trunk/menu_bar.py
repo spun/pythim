@@ -22,4 +22,7 @@ class MenuBar(gtk.MenuBar):
 					subitem = gtk.ImageMenuItem(sub[0])
 					subitem.connect("activate", sub[1])
 				submenu.append(subitem)
+				subitem.show()
 			item.set_submenu(submenu)
+			item.show()
+		self.show()
