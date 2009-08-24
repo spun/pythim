@@ -1,0 +1,8 @@
+Para ejecurar pyim.py antes debes ejecutar servidor.py por medio de un terminal, 
+una vez abierto el servidor y pyim.py los mensajes escritos en este ultimo se
+ mostraran en la termilal del servidor.
+
+Al cerrar pyim.py se enviara el mensaje "quit" al servidor para que este se cierre,
+ al escribir quit en la conversacion el servidor tambien se cerrara.
+
+EXTRA: Al escribir "beta" en la conversacion aparecera una notificacion.
