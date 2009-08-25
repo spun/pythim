@@ -3,7 +3,7 @@ import os
 
 # project constants
 PROGRAM_NAME = "Pyim"
-PROGRAM_VERSION = "0.0.1 alpha"
+PROGRAM_VERSION = "0.0.5 alpha"
 WEBPAGE = "http:///"
 DOC = "http://www.google.es/"
 

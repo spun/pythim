@@ -1,8 +1,29 @@
-Para ejecurar pyim.py antes debes ejecutar servidor.py por medio de un terminal, 
-una vez abierto el servidor y pyim.py los mensajes escritos en este ultimo se
- mostraran en la termilal del servidor.
+--> Cliente
+Esta el Client/pyim.py, se puede ejecutar por terminal o por doble click, 
+se conecta a localhost:9999, si lo ejecutas por terminal muestra el mensaje 
+que se envia y algunos mensajes si se produce algun error.
 
-Al cerrar pyim.py se enviara el mensaje "quit" al servidor para que este se cierre,
- al escribir quit en la conversacion el servidor tambien se cerrara.
+NEW- Implementada funcion de recepcion de mensajes. El cliente
+ya recibe los mensajes del servidor y varios clientes puede comunicarse entre
+si, sin problemas.
 
-EXTRA: Al escribir "beta" en la conversacion aparecera una notificacion.
+TODO:
+-Discutir e implementar un protocolo de conexion.
+-Envio de nicks al servidor para el resto de users. (nuevo protocolo)
+-Gestion de colores para las fuentes, se pueden poner colores mediante GTK. (nuevo protocolo)
+-Implementacion de la hora de envio de mensajes en mensajes propios.
+
+WISH LIST:
+-Panel de contactos.
+
+--> Servidor
+NEW- Reemplazado el server completo por una version adaptada del TServer 1.0
+Esta en Server/server.py, solo se puede ejecutar por terminal, necesita de un parametro
+que es el puerto. No tiene interfaz grafica ninguna.
+
+TODO:
+-Discutir e implementar un protocolo de conexion.
+-Reparar la gestion de desconexion de clientes.
+-Adaptar la gestion de nicks al nuevo cliente (protocolo nuevo).
+-Crear log de eventos.
+-Adaptar la ejecucion de comandos al nuevo cliente.
