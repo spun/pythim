@@ -4,6 +4,7 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 import os
+import gobject
 
 import socket
 
@@ -22,6 +23,8 @@ class Gui(gtk.Window):
 
 		menu_quit = gtk.STOCK_QUIT, self.quit
 		menu_about = gtk.STOCK_ABOUT, About	
+		
+		gobject.idle_add(self.recv_text)
 		
 		gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
 		self.set_size_request(600, 400)
@@ -96,6 +99,10 @@ class Gui(gtk.Window):
 		vbox.pack_start(hbox, False, False, 0)
 		hbox.show()
 		
+		
+		mensaje=self.recv_text()
+		
+		
 		# Entry box
 		entry = gtk.Entry()
 		entry.set_max_length(50)
@@ -128,7 +135,18 @@ class Gui(gtk.Window):
 		# Trayicon
 		tray_menu = [menu_about, None, menu_quit]
 		self.tray_icon = TrayIcon(self.show, self.hide, tray_menu)
-		
+	
+	
+	def recv_text(self):
+		try:
+			mensaje=self.s.recv(1024)
+			self.s.settimeout(.1)
+			final = self.textbuffer.get_end_iter()
+			self.textbuffer.insert(final,mensaje)
+			return True
+		except:
+			return True	
+				
 		
 	def send_text(self, widget, entry):
 		entry_text = entry.get_text()
