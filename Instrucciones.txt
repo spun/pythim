@@ -8,6 +8,7 @@ ya recibe los mensajes del servidor y varios clientes puede comunicarse entre
 si, sin problemas.
 
 TODO:
+-No existe el autoscroll, hay que arreglarlo.
 -Discutir e implementar un protocolo de conexion.
 -Envio de nicks al servidor para el resto de users. (nuevo protocolo)
 -Gestion de colores para las fuentes, se pueden poner colores mediante GTK. (nuevo protocolo)

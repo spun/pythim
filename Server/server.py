@@ -4,11 +4,6 @@ import time
 import os
 import sys
 
-#Asocia Ip con socket visor
-asocVisor={}
-#Asocia un socket con su Ip
-sockIp={}
-
 #Clase servidor, crea un nuevo servidor.
 class Servidor:
 	#Inicializacion de variables, se ejecuta cuando se invoca una instancia de la clase servidor
@@ -19,8 +14,7 @@ class Servidor:
 	#Devuelve el nick de la gente conectada
 	def conectados(self, nicks,sock):
 		for nick in nicks:		
-			sock.send(chr(27)+"[0;34m"+nicks[nick])
-		sock.send(chr(27)+"[0m")
+			sock.send(nicks[nick]+"\n")
 	
 	#Comprueba si se recibe un mensaje del sock, si no responde se entiende que se ha desconectado y se elimina
 	def recibir(self, listaSockets, sock, nicks):
@@ -38,27 +32,21 @@ class Servidor:
 	def conectar(self, servidor, listaSockets, nicks):
 		try:
 			scliente, addr = servidor.accept()
-
 			servidor.settimeout(.1)
-			
-			dir=addr[0]
-			asocVisor[dir]=scliente		
-			
+			dir=addr[0]	
 			scliente.send("#######################################\n")
 			scliente.send("Bienvenido a la v.1.0 de Pyim\n")
 			scliente.send("#######################################\n\n")
 			
-			#scliente.send("Nick: ")
-			#cnick=scliente.recv(1024)
-			#nicks[scliente]=cnick
-			#scliente.send("\nEstas dentro\n\n")
-			#scliente.send(chr(27)+"[0m")
-			print scliente
+			scliente.send("Escribe tu Nick: ")
+			cnick=scliente.recv(1024)
+			nicks[scliente]=cnick
+			scliente.send("\nEstas dentro\n\n")
 			listaSockets.append(scliente)
 			
 			for destino in listaSockets:
 				if destino != servidor and destino != scliente:
-					#destino.send(chr(27)+"[1;31m"+cnick)
+					destino.send(cnick)
 					destino.send(" se ha conectado.\n") #Arreglar salto de linea 
 		except:
 			pass
@@ -69,8 +57,8 @@ class Servidor:
 		for destino in listaSockets:
 			if destino != servidor and destino != sock:
 				destino.send("["+str(hora[3])+":"+str(hora[4])+":"+str(hora[5])+"] ")	
-				#destino.send(nicks[sock])
-				destino.send("> "+mensaje+"\n")
+				destino.send(nicks[sock])
+				destino.send(" dice: "+mensaje+"\n")
 				
 	#Comprueba si el mensaje es un comando valido			
 	def Comp_Comando(self, mensaje, nicks, sock, listaSockets, servidor):
@@ -82,9 +70,8 @@ class Servidor:
 			salida=True
 			for destino in listaSockets:
 				if destino != servidor and destino != sock:
-					destino.send(chr(27)+"[1;31m"+nicks[sock])
+					destino.send(nicks[sock])
 					destino.send(" se ha desconectado.\n") #Arreglar salto de linea 
-					destino.send(chr(27)+"[0m")
 			
 			listaSockets.remove(sock)
 			del nicks[sock]
@@ -92,16 +79,13 @@ class Servidor:
 			
 		elif '@comandos' in mensaje:
 			salida=True
-			sock.send(chr(27)+"[1;31m"+"@conectados\n@salir\n@afk\n")
-			sock.send(chr(27)+"[0m")
+			sock.send("@conectados\n@salir\n@afk\n")
 		elif '@afk' in mensaje:
 			salida=True
 			for destino in listaSockets:
 				if destino != servidor and destino != sock:
-					destino.send(chr(27)+"[1;31m"+nicks[sock])
-					destino.send(" esta AFK.\n") #Arreglar salto de linea 
-					destino.send(chr(27)+"[0m")
-				
+					destino.send(nicks[sock])
+					destino.send(" esta AFK.\n")
 		return salida
 	
 	#Redirecciona la salida de error a un archivo de texto (TODO)
@@ -114,7 +98,7 @@ class Servidor:
 		listaSockets=[servidor]
 		nicks={}
 
-		servidor.bind(("", 9999))
+		servidor.bind(("", self.puerto))
 		
 		servidor.listen(50)
 		salir=False
