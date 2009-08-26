@@ -76,15 +76,17 @@ class Gui(gtk.Window):
 		vbox.pack_start(sw, True, True, 0)
 		sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
 		sw.set_shadow_type(gtk.SHADOW_IN)
-		textview = gtk.TextView()
-		textview.set_editable(False)
-		textview.set_border_width(2)
-		self.textbuffer = textview.get_buffer()
-		sw.add(textview)
+		self.textview = gtk.TextView()
+		self.textview.set_editable(False)
+		self.textview.set_wrap_mode(gtk.WRAP_WORD)
+		self.textview.set_cursor_visible(False)
+		self.textview.set_border_width(2)		
+		self.textbuffer = self.textview.get_buffer()
+		sw.add(self.textview)
 		sw.show()
-		textview.show()
+		self.textview.show()
 		# Informamos si se pudo conectar o no
-		self.textbuffer.set_text(start_text)		
+		self.textbuffer.set_text(start_text)
 		
 		
 		# Label de separacion
@@ -143,6 +145,8 @@ class Gui(gtk.Window):
 			self.s.settimeout(.1)
 			final = self.textbuffer.get_end_iter()
 			self.textbuffer.insert(final,mensaje)
+			# scroll al final al recibir
+			self.textview.scroll_to_mark(self.textbuffer.get_insert(), 0)
 			return True
 		except:
 			return True	
@@ -174,6 +178,9 @@ class Gui(gtk.Window):
 		final = self.textbuffer.get_end_iter()
 		self.textbuffer.insert(final, os.environ["USERNAME"] + " dice:\n")
 		self.textbuffer.insert(final,entry_text)
+		# scroll al final al escribir
+		self.textview.scroll_to_mark(self.textbuffer.get_insert(), 0)
+
 		
 		# Vaciamos la caja de entrada de texto
 		entry.set_text("")	
