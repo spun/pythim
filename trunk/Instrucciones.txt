@@ -6,16 +6,28 @@ que se envia y algunos mensajes si se produce algun error.
 NEW- Implementada funcion de recepcion de mensajes. El cliente
 ya recibe los mensajes del servidor y varios clientes puede comunicarse entre
 si, sin problemas.
+-Añadido scroll al final de la conversacion automatico.
+-Añadido ajuste por palabras para frases largas (no es util si no se aumenta el limite del entry)
+
 
 TODO:
--No existe el autoscroll, hay que arreglarlo.
 -Discutir e implementar un protocolo de conexion.
 -Envio de nicks al servidor para el resto de users. (nuevo protocolo)
 -Gestion de colores para las fuentes, se pueden poner colores mediante GTK. (nuevo protocolo)
 -Implementacion de la hora de envio de mensajes en mensajes propios.
 
+-Propuesta de un apartado en la ventana relacionado con la conexion, 
+con un campo para direccion, puerto y nick del usuario, y solo una 
+vez ya conectado sea posible la conversacion.
+-Utilizar la "libreria" libNotify.py que se hizo el señor neo y que tan poco se esta aprovechando para que aparezca si se recibe un mensaje con la ventana en el sistem tray (facil).
+-Al recibir un mensaje si el cliente esta minimizado, parpadee en la lista de aplicaciones con ese color naranjote cool (ni idea).
+
+
 WISH LIST:
--Panel de contactos.
+->Panel de contactos.
+-Propuesta 1: Realizar algo similar a los programas de mensajeria "mayores", donde una ventana iniciar pida datos (direccion, puerto) y una vez conectado aparezca una lista de contactos conectados, y al hacer doble click se abra una conversacion privada.
+-Propuesta 2: Crear algo parecido a un chat irc, donde la ventana del cliente sea una conversacion entre todos los usuarios de la red y con una lista de contactos al margen donde se puedan acceder a conversaciones privadas.
+
 
 --> Servidor
 NEW- Reemplazado el server completo por una version adaptada del TServer 1.0
@@ -28,3 +40,9 @@ TODO:
 -Adaptar la gestion de nicks al nuevo cliente (protocolo nuevo).
 -Crear log de eventos.
 -Adaptar la ejecucion de comandos al nuevo cliente.
+
+
+
+BUGS
+-Al abrir un cliente e inmediatamente abrir otro, el segundo no 
+aparece hasta escribir el nick en el primero (WTF).
