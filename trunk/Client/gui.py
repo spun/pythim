@@ -164,6 +164,8 @@ class Gui(gtk.Window):
 		if entry_text == "beta":
 			g = notification()
 			g.notify()
+		elif entry_text == "@salir":
+			self.quit()
 			
 		# Hacemos el salto de linea		
 		entry_text = entry_text + "\n"
@@ -188,6 +190,7 @@ class Gui(gtk.Window):
 		""""""
 		try:
 			self.s.close()
+			self.textbuffer.insert(final,"Te has desconectado")
 			gtk.main_quit()
 		except:
 			gtk.main_quit()
