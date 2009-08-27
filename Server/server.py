@@ -11,6 +11,11 @@ class Servidor:
 		print "Servidor en escucha..."
 		self.puerto=p
 	
+	#Intenta recibir y componer el avatar del usuario
+	def avatar(self, sock):
+		file = open("avatar.jpg", "wb")
+		parte=sock.recv(128)
+	
 	#Devuelve el nick de la gente conectada
 	def conectados(self, nicks,sock):
 		for nick in nicks:		
@@ -38,10 +43,22 @@ class Servidor:
 			scliente.send("Bienvenido a la v.1.0 de Pyim\n")
 			scliente.send("#######################################\n\n")
 			
-			scliente.send("Escribe tu Nick: ")
+			#La cadena de conexion debe tener la siguiente forma:
+			#nick-avatar siendo [avatar] 'y' o 'n' segun tenga o no avatar
+			#conexion_string=scliente.recv(1024)
+			
+			#i=0
+			#while conexion_string[i] != '-':
+			#	cnick=cnick+conexion_string[i]
+			#	i++
+			
+			#avatar=conexion_string[i+1]
+			
+			#if avatar == 'y':
+			#	self.avatar(scliente)
+				
 			cnick=scliente.recv(1024)
 			nicks[scliente]=cnick
-			scliente.send("\nEstas dentro\n\n")
 			listaSockets.append(scliente)
 			
 			for destino in listaSockets:
