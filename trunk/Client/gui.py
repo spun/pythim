@@ -24,7 +24,7 @@ class Gui(gtk.Window):
 		menu_quit = gtk.STOCK_QUIT, self.quit
 		menu_about = gtk.STOCK_ABOUT, About	
 		
-		gobject.idle_add(self.recv_text)
+		
 		
 		gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
 		self.set_size_request(600, 400)
@@ -40,6 +40,7 @@ class Gui(gtk.Window):
 			self.s = socket.socket()
 			self.s.connect(("localhost", 9999))
 			start_text="Conectado\n\n"
+			gobject.idle_add(self.recv_text)
 		except:
 			start_text="No se pudo conectar\n\n"
 		
@@ -100,9 +101,6 @@ class Gui(gtk.Window):
 		hbox = gtk.HBox()
 		vbox.pack_start(hbox, False, False, 0)
 		hbox.show()
-		
-		
-		mensaje=self.recv_text()
 		
 		
 		# Entry box
