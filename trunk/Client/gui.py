@@ -6,7 +6,7 @@ if not sys.platform == 'win32':
 import gtk
 import os
 import gobject
-import socket
+import libSockets
 
 import webbrowser
 
@@ -14,24 +14,27 @@ from about import About
 from tray_icon import TrayIcon
 from menu_bar import MenuBar
 from libNotify import notification
+import sockets
+
 
 import cons
 
 class Gui():
-	""""""
-
-			
+	""""""			
 	def __init__(self):
 		self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.window.set_icon_from_file(cons.ICON_PROGRAM)
 		self.window.set_resizable(True)
 		self.window.connect("destroy", self.close_application)
 		self.window.set_title(cons.PROGRAM_NAME)
-		
+
+
+		# Caja global
 		vboxAdm = gtk.VBox()
 		self.window.add(vboxAdm)
 		vboxAdm.show()
-				
+
+
 		# Menu items
 		menu_quit = gtk.STOCK_QUIT, self.close_application
 		menu_help = gtk.STOCK_HELP, self.help
@@ -51,7 +54,7 @@ class Gui():
 		self.vbox1 = gtk.VBox()
 		vboxAdm.pack_start(self.vbox1, True, True, 0)
 		self.vbox1.show()
-		self.vbox1.set_border_width(10)	
+		self.vbox1.set_border_width(10)
 		
 		self.hbox1 = gtk.HBox()
 		self.vbox1.pack_end(self.hbox1, True, True, 10)
@@ -70,89 +73,45 @@ class Gui():
 		
 		self.window.show()
 		
-		
+
 	def conect_socket(self, widget, host, port, user):
 		
-		info_conex= "Se intentara conectar a "+ host+":"+ str(port)+ " como \"" + user.get_text() + "\""
-		
-		self.textbuffer.set_text(info_conex)
-		try:
-			self.s = socket.socket()
-			self.s.connect(("localhost", 9999))
-			nick=user.get_text()
-			self.s.send(nick)
-			gobject.idle_add(self.recv_text)
-			start_text="\nConectado\n\n"
-			color = "green"
-			
-		except:
-			start_text="\nNo se pudo conectar\n\n"
-			color = "red"
-			
-		final = self.textbuffer.get_end_iter()
-		startiter =  self.textbuffer.get_end_iter().get_offset()
+		self.s = libSockets.newSocket(self.textbuffer, gobject)
 
-		self.textbuffer.insert(self.textbuffer.get_iter_at_offset(startiter), start_text)
-		startiter = self.textbuffer.get_iter_at_offset(startiter)
-		enditer = self.textbuffer.get_end_iter()
-		
-		tag = self.textbuffer.create_tag(None, foreground = color)
-		self.textbuffer.apply_tag(tag, startiter, enditer)
-		
-	def recv_text(self):
-		try:
-			mensaje=self.s.recv(1024)
-			self.s.settimeout(.1)
-			final = self.textbuffer.get_end_iter()
-			self.textbuffer.insert(final,mensaje)
-			# scroll al final al recibir
-			self.textview.scroll_to_mark(self.textbuffer.get_insert(), 0)
-			return True
-		except:
-			return True		
-		
 	def send_text(self, widget):
+		
 		inicio = self.textbuffer2.get_start_iter()
 		final = self.textbuffer2.get_end_iter()
 		entry_text = self.textbuffer2.get_text(inicio, final)
 		
-		# Informacion al terminal
-		print "Contenido caja: %s\n" % entry_text
-		
-		# Mandamos el mensaje al servidor
-		try:
-			self.s.send(entry_text)
-		except:
-			print "No se pudo enviar el mensaje"
-		
-		# Primera version de notificaciones
-		if entry_text == "beta":
-			g = notification()
-			g.notify()
-		elif entry_text == "@salir":
-			self.quit()
-			
-		# Hacemos el salto de linea		
-		entry_text = str(entry_text) + "\n"
-		
-		# Insertamos texto al final del textbox
+		if entry_text[0]=="@":			
+			entry_text="La ejecucion de comandos esta restringida"
+		else:
+			try:
+				self.s.send_mens(entry_text)
+			except:
+				entry_text=entry_text+"\nDebes estar conectado para enviar el mensaje"
+				
+			entry_text=os.environ["USERNAME"] + " dice:\n"+entry_text+"\n"
+						
 		final = self.textbuffer.get_end_iter()
-		self.textbuffer.insert(final, os.environ["USERNAME"] + " dice:\n")
 		self.textbuffer.insert(final,entry_text)
-		# scroll al final al escribir
-		self.textview.scroll_to_mark(self.textbuffer.get_insert(), 0)
 
-		
-		# Vaciamos la caja de entrada de texto
-		self.textbuffer2.set_text("")	
-		
+		self.textbuffer2.set_text("")   
+
 	def makeChatArea(self):
+		
+		def rescroll(adj, scroll):
+			adj.set_value(adj.upper-adj.page_size)
+			scroll.set_vadjustment(adj)
+		
 		
 		vpaned = gtk.VPaned()
 		vpaned.SetPosition=550
-		self.hbox1.pack_start(vpaned, True, True, 0)
+		self.hbox1.pack_start(vpaned, True, True, 5)
 		vpaned.show()		
 		sw = gtk.ScrolledWindow()
+		
 		sw.set_size_request(0, 230)
 		sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
 		sw.set_shadow_type(gtk.SHADOW_IN)
@@ -161,6 +120,9 @@ class Gui():
 		self.textview.set_wrap_mode(gtk.WRAP_WORD)
 		self.textbuffer = self.textview.get_buffer()
 		sw.add(self.textview)
+		vadj = sw.get_vadjustment()
+		vadj.connect('changed', lambda a, s=sw: rescroll(a,s))
+
 		sw.show()
 		self.textview.show()
 		vpaned.add1(sw)
@@ -199,11 +161,9 @@ class Gui():
 		if self.show_conect:
 			self.hboxConex.hide()
 			self.show_conect=False
-			print "a"
 		else:
 			self.hboxConex.show()
 			self.show_conect=True
-			print "b"
 			
 	def makeConexionEntry(self):
 		
@@ -255,10 +215,10 @@ class Gui():
 		self.hbox1.pack_end(self.vboxUsers, False, False, 0)
 		self.vboxUsers.show()
 		
-		
         # Create a new scrolled window, with scrollbars only if needed
 		self.scrolled_window = gtk.ScrolledWindow()
 		self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		self.scrolled_window.set_size_request(130, 0)
 
 		model = gtk.ListStore(gobject.TYPE_STRING)
 		tree_view = gtk.TreeView(model)
@@ -269,13 +229,13 @@ class Gui():
 		self.show_UsersOnline = False
 
         # Add some messages to the window
-		for i in range(10):
+		for i in range(6):
 			msg = "Usuario #%d" % i
 			iter = model.append()
 			model.set(iter, 0, msg)
 
 		cell = gtk.CellRendererText()
-		column = gtk.TreeViewColumn("Usuarios conectados", cell, text=0)
+		column = gtk.TreeViewColumn("Conectados", cell, text=0)
 		tree_view.append_column(column)
 		
 		self.vboxUsers.pack_start(self.scrolled_window, True, True, 0)
@@ -301,8 +261,7 @@ class Gui():
 		
 	def close_application(self, dialog=None, response=None):
 		try:
-			self.s.send("@salir")
-			self.s.close()			
+			self.s.desconectar()		
 			gtk.main_quit()
 		except:
 			gtk.main_quit()
