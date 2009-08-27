@@ -12,9 +12,14 @@ class Servidor:
 		self.puerto=p
 	
 	#Intenta recibir y componer el avatar del usuario
-	def avatar(self, sock):
+	def avatar(self, sock, tam):
 		file = open("avatar.jpg", "wb")
-		parte=sock.recv(128)
+		pos=0
+		while pos<tam:
+			parte=sock.recv(128)
+			file.seek(pos)
+			file.write(parte)
+			pos=file.tell()
 	
 	#Devuelve el nick de la gente conectada
 	def conectados(self, nicks,sock):
@@ -44,7 +49,7 @@ class Servidor:
 			scliente.send("#######################################\n\n")
 			
 			#La cadena de conexion debe tener la siguiente forma:
-			#nick-avatar siendo [avatar] 'y' o 'n' segun tenga o no avatar
+			#nick-avatar-TamAvatar- siendo [avatar] 'y' o 'n' segun tenga o no avatar
 			#conexion_string=scliente.recv(1024)
 			
 			#i=0
@@ -53,9 +58,12 @@ class Servidor:
 			#	i++
 			
 			#avatar=conexion_string[i+1]
-			
+			#i+=2
 			#if avatar == 'y':
-			#	self.avatar(scliente)
+			#	while conexion_string[i] != '-':
+			#		temp=tam+conexion_string[i]
+			#	tam=temp.atoi()
+			#	self.avatar(scliente, tam)
 				
 			cnick=scliente.recv(1024)
 			nicks[scliente]=cnick
