@@ -4,12 +4,13 @@ import __builtin__
 import os.path
 import sys
 import logging
-
+import sys
 import pygtk
-pygtk.require('2.0')
+if not sys.platform == 'win32':
+        pygtk.require('2.0')
 import gtk
 import gobject
-
+import locale
 from gui import Gui
 
 import cons
