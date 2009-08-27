@@ -16,8 +16,9 @@ class MenuBar(gtk.MenuBar):
 					subitem = gtk.SeparatorMenuItem()
 				elif isinstance(sub[0], gtk.CheckMenuItem):
 					subitem = sub[0]
-					subitem.set_active(sub[2])
-					subitem.connect("toggled", sub[1])
+					subitem.set_active(sub[1])
+					subitem.connect("toggled", sub[2])
+
 				else:
 					subitem = gtk.ImageMenuItem(sub[0])
 					subitem.connect("activate", sub[1])
