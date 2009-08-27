@@ -1,7 +1,8 @@
  # -*- coding: iso-8859-15 -*-
-
+import sys
 import pygtk
-pygtk.require('2.0')
+if not sys.platform == 'win32':
+        pygtk.require('2.0')
 import gtk
 
 import webbrowser

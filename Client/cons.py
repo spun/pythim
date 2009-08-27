@@ -1,6 +1,6 @@
 import sys
 import os
-
+import locale
 # project constants
 PROGRAM_NAME = "Pyim"
 PROGRAM_VERSION = "0.0.5 alpha"
