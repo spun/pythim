@@ -18,8 +18,9 @@ opts = {
 
 setup(
     name = "Pyim",
-    description = "A nice GUI interface for those with GiantDisc jukebox systems.",
-    version = "0.61",
+    description = "Programa de mensajeria instantanea en LAN",
+    version = "1.0",
+	author = 'Neo y ShadowLink',
     windows = [
         {"script": "pyim.py"}
     ],

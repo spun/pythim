@@ -69,6 +69,7 @@ class Servidor:
 			nicks[scliente]=cnick
 			listaSockets.append(scliente)
 			
+			print "Se ha conectado\n"
 			for destino in listaSockets:
 				if destino != servidor and destino != scliente:
 					destino.send(cnick)
@@ -79,6 +80,7 @@ class Servidor:
 	#Envia el mensaje del sock al resto de clientes
 	def enviar(self, listaSockets, servidor, sock, mensaje, nicks):
 		hora=time.localtime(time.time())
+		print "Ha enviado un mensaje\n"
 		for destino in listaSockets:
 			if destino != servidor and destino != sock:
 				destino.send("["+str(hora[3])+":"+str(hora[4])+":"+str(hora[5])+"] ")	
@@ -93,6 +95,7 @@ class Servidor:
 			self.conectados(nicks, sock)
 		elif '@salir' in mensaje:
 			salida=True
+			print "Se ha desconectado\n"
 			for destino in listaSockets:
 				if destino != servidor and destino != sock:
 					destino.send(nicks[sock])
