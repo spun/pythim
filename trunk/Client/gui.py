@@ -14,7 +14,7 @@ from about import About
 from tray_icon import TrayIcon
 from menu_bar import MenuBar
 from libNotify import notification
-import sockets
+
 
 
 import cons
