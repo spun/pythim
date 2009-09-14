@@ -137,18 +137,21 @@ class Gui():
 		sw2.set_shadow_type(gtk.SHADOW_IN)
 		textview2 = gtk.TextView()
 		textview2.set_wrap_mode(gtk.WRAP_WORD)
+		enter_key=textview2.connect("key_press_event", self.button_pressed)
 		self.textbuffer2 = textview2.get_buffer()
 		sw2.add(textview2)
 		sw2.show()
 		textview2.show()
-		hbox.pack_start(sw2, True, True, 0)
-		
+		hbox.pack_start(sw2, True, True, 0)		
 		button = gtk.Button("Enviar")
 		button.connect("clicked", self.send_text)
 		button.show()
 		hbox.pack_start(button, False, False, 0)
 
-	
+	def button_pressed(self, widget, event):
+		if event.keyval == 65421:
+			self.send_text(self)
+		return False
 	
 	def statusConexionEntry(self, widget):
 		if self.show_conect:
