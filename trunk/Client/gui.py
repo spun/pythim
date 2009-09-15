@@ -13,7 +13,7 @@ import webbrowser
 from about import About
 from tray_icon import TrayIcon
 from menu_bar import MenuBar
-from libNotify import notification
+
 
 
 
@@ -149,8 +149,13 @@ class Gui():
 		hbox.pack_start(button, False, False, 0)
 
 	def button_pressed(self, widget, event):
-		if event.keyval == 65421:
+		
+		if sys.platform == 'win32':
+			if event.keyval == 65293:
+				self.send_text(self)
+		elif event.keyval==65421:
 			self.send_text(self)
+		
 		return False
 	
 	def statusConexionEntry(self, widget):
